@@ -1,3 +1,5 @@
+from move import BoardMove
+
 class TicTacToeBoard:
     BOARD_SIZE = 3
     EMPTY = None
@@ -12,18 +14,21 @@ class TicTacToeBoard:
     def initialize_board(self):
         return [ [self.EMPTY] * self.BOARD_SIZE for row in range(self.BOARD_SIZE) ]
 
-    def make_move(self, x, y, symbol):
-        if self.valid_move(x, y):
-            self._board[x][y] = symbol
+    def make_move(self, move, symbol):
+        if self.valid_move(move):
+            self._board[move.x][move.y] = symbol
 
-    def valid_move(self, x, y):
-        return self.is_within(x, y) and self.is_empty(x, y)
+    def at(self, position):
+        return self.board[position.x][position.y]
 
-    def is_within(self, x, y):
-        return self.inside(x) and self.inside(y)
+    def valid_move(self, move):
+        return self.is_within(move) and self.is_empty(move)
 
-    def is_empty(self, x, y):
-        return self._board[x][y] == None
+    def is_within(self, move):
+        return self.inside(move.x) and self.inside(move.y)
+
+    def is_empty(self, move):
+        return self._board[move.x][move.y] == None
 
     def inside(self, point):
         return point >= 0 and point < self.BOARD_SIZE

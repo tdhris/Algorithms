@@ -1,4 +1,5 @@
 from game import Game
+from move import BoardMove
 from computer_player import minimax
 import os
 import re
@@ -29,9 +30,9 @@ class CLI:
                 if self.game.player == self.HUMAN:
                     move = self.get_player_move()
                 else:
-                    move = minimax(self.game, self.game.player)[1]
+                    move = minimax(self.game).move
 
-            self.game.play_turn(*move)
+            self.game.play_turn(move)
 
         self.clear_screen()
         self.draw_board()
@@ -46,9 +47,10 @@ class CLI:
     def get_player_move(self):
         row = int(input("Enter row (1 - 3)> ")) - 1
         col = int(input("Enter column (1 - 3)> ")) - 1
+        move = BoardMove(row, col)
 
-        if self.game.board.valid_move(row, col):
-                return (row, col)
+        if self.game.valid_move(move):
+                return move
 
     def draw_board(self):
         for i in range(self.game.board.BOARD_SIZE):

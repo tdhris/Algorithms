@@ -1,4 +1,5 @@
 from board import TicTacToeBoard
+from move import BoardMove
 
 class Game:
     X = "X"
@@ -9,6 +10,7 @@ class Game:
         self._player = self.X
         self._running = True
         self._has_winner = False
+        self._moves = []
 
     @property
     def running(self):
@@ -36,9 +38,10 @@ class Game:
         if self.running:
             self._player = self.opponent
 
-    def play_turn(self, x, y):
+    def play_turn(self, move):
         if self.running:
-            self.board.make_move(x, y, self.player)
+            self.board.make_move(move, self.player)
+            self._moves.append(move)
             self.check_game_over()
             self.change_turn()
 
@@ -49,8 +52,18 @@ class Game:
     def board_filled(self):
         return self.board.full_board()
 
-    def at(self, x, y):
-        return self.board.board[x][y]
+    def at(self, position):
+        return self.board.at(position)
+
+    def has_moves_on_board(self):
+        return bool(self._moves)
+
+    def last_move(self):
+        if self.has_moves_on_board():
+            self._moves[-1]
+
+    def valid_move(self, move):
+        return self.board.valid_move(move)
 
     def game_won(self):
         if self.check_rows() or self.check_columns() or self.check_diagonal() or self.check_antidiagonal():
@@ -88,8 +101,9 @@ class Game:
         moves = []
         for i in range(self.board.BOARD_SIZE):
             for j in range(self.board.BOARD_SIZE):
-                if self.board.is_empty(i, j):
-                    moves.append((i, j))
+                move = BoardMove(i, j)
+                if self.board.is_empty(move):
+                    moves.append(move)
         return moves
 
 

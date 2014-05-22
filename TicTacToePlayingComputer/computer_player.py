@@ -1,43 +1,48 @@
 from game import Game
+from move import BestMove, BoardMove
 from copy import deepcopy
 
 WIN = 1
 LOSE = -1
 TIE = 0
 
+NINFINITY = - 10000
+INFINITY = 10000
 
-#returns best move
-def minimax(game, player):
-    if not game.running:
-        return (score_game(game, player), None)
+INITIAL_DEPTH = 100
 
-    if game.player == player:
-        best_move = (-2, None)
-        for move in game.all_possible_moves():
-            possible_game = deepcopy(game)
-            possible_game.play_turn(*move)
-            score = minimax(possible_game, game.opponent)[0]
-            if score > best_move[0]:
-                best_move = (score, move)
 
-    if game.player != player:
-        best_move = (2, None)
-        for move in game.all_possible_moves():
-            possible_game = deepcopy(game)
-            possible_game.play_turn(*move)
-            score = minimax(possible_game, game.opponent)[0]
-            if score < best_move[0]:
-                best_move = (score, move)
+def minimax(game, depth=INITIAL_DEPTH, maximazing_player=True):
+    possible_game = deepcopy(game)
 
+    if possible_game.running is False:
+        score = score_game(possible_game, maximazing_player)
+        return BestMove(score, depth, possible_game.last_move())
+
+    if maximazing_player:
+        best_move = BestMove(NINFINITY, depth, None)
+        for move in possible_game.all_possible_moves():
+            possible_game.play_turn(move)
+            scored_move = minimax(possible_game, depth - 1, False)
+            if scored_move.score > best_move.score and scored_move.depth <= best_move.depth:
+                best_move = scored_move
+                best_move.move = move
+
+    else:
+        best_move = BestMove(INFINITY, depth, None)
+        for move in possible_game.all_possible_moves():
+            possible_game.play_turn(move)
+            scored_move = minimax(possible_game, depth - 1, True)
+            if scored_move.score < best_move.score and scored_move.depth <= best_move.depth:
+                best_move = scored_move
+                best_move.move = move
     return best_move
 
 
-def score_game(game, player):
+def score_game(game, maximazing_player):
     if not game.has_winner:
         return TIE
-
-    if game.winner == player:
+    if maximazing_player:
         return WIN
-
     else:
         return LOSE
