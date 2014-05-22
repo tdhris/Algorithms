@@ -13,12 +13,16 @@ INITIAL_DEPTH = 100
 
 
 def computer_move(game, computer_player):
-    return minimax(game, computer_player).move
+    return alpha_beta_minimax(game, computer_player).move
 
 """Minimax Algorithm assumes that at each step:
 * Maximazing player is trying to maximize his chances of winning
-* on the next turn the Minimizing player is trying to minimize the chances of the maximazing player winning"""
-def minimax(game, computer_player, depth=INITIAL_DEPTH, alpha=NINFINITY, beta = INFINITY):
+* on the next turn the Minimizing player is trying to minimize the chances of the maximazing player winning
+
+Alpha–beta pruning algorithm: seeks to decrease the number of nodes that are evaluated by the minimax algorithm
+* Stops evaluating a move when at least one possibility has been found that proves the move to be worse than a previously examined move"""
+
+def alpha_beta_minimax(game, computer_player, depth=INITIAL_DEPTH, alpha=NINFINITY, beta = INFINITY):
     possible_game = deepcopy(game)
 
     if possible_game.running is False:
@@ -30,7 +34,7 @@ def minimax(game, computer_player, depth=INITIAL_DEPTH, alpha=NINFINITY, beta = 
         for move in possible_game.all_possible_moves():
             possible_game.play_turn(move)
             possible_game.change_turn()
-            scored_move = minimax(possible_game, computer_player, depth-1, alpha, beta)
+            scored_move = alpha_beta_minimax(possible_game, computer_player, depth-1, alpha, beta)
             if scored_move.score > best_move.score:
                 best_move = scored_move
                 best_move.move = move
@@ -43,7 +47,7 @@ def minimax(game, computer_player, depth=INITIAL_DEPTH, alpha=NINFINITY, beta = 
         for move in possible_game.all_possible_moves():
             possible_game.play_turn(move)
             possible_game.change_turn()
-            scored_move = minimax(possible_game, computer_player, depth-1, alpha, beta)
+            scored_move = alpha_beta_minimax(possible_game, computer_player, depth-1, alpha, beta)
             if scored_move.score < best_move.score:
                 best_move = scored_move
                 best_move.move = move
