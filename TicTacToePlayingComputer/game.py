@@ -34,6 +34,10 @@ class Game:
             return self.O
         return self.X
 
+    @property
+    def winning_move(self):
+        return [self.player] * self.board.BOARD_SIZE
+
     def change_turn(self):
         if self.running:
             self._player = self.opponent
@@ -73,29 +77,22 @@ class Game:
         return False
 
     def check_rows(self):
-        for row in self.board.board:
-            if row == [self.player] * self.board.BOARD_SIZE:
+        for i in range(self.board.BOARD_SIZE):
+            if self.winning_move == self.board.get_row(i):
                 return True
         return False
 
     def check_columns(self):
         for i in range(self.board.BOARD_SIZE):
-            column = [self.board.board[i][j] for j in range(self.board.BOARD_SIZE)]
-            if column == ([self.player] * self.board.BOARD_SIZE):
+            if self.winning_move == self.board.get_column(i):
                 return True
-        return False;
+        return False
 
     def check_diagonal(self):
-        for i in range(self.board.BOARD_SIZE):
-            if self.board.board[i][i] != self.player:
-                return False
-        return True
+        return self.winning_move == self.board.get_diagonal()
 
     def check_antidiagonal(self):
-        for i in range(self.board.BOARD_SIZE):
-            if self.board.board[i][self.board.BOARD_SIZE - 1 - i] != self.player:
-                return False
-        return True
+        return self.winning_move == self.board.get_antidiagonal()
 
     def all_possible_moves(self):
         moves = []

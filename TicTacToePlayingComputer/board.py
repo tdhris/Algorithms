@@ -39,3 +39,15 @@ class TicTacToeBoard:
                 if element == self.EMPTY:
                     return False
         return True
+
+    def get_diagonal(self):
+        return [self.board[i][i] for i in range(self.BOARD_SIZE)]
+
+    def get_antidiagonal(self):
+        return [self.board[i][self.BOARD_SIZE - 1 - i] for i in range(self.BOARD_SIZE)]
+
+    def get_row(self, row_number):
+        return self.board[row_number]
+
+    def get_column(self, column_number):
+        return [self.board[i][column_number] for i in range(self.BOARD_SIZE)]
