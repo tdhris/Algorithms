@@ -42,8 +42,7 @@ class Game:
         return (self.board.BOARD_SIZE ** 2) - len(self._moves)
 
     def change_turn(self):
-        if self.running:
-            self._player = self.opponent
+        self._player = self.opponent
 
     def play_turn(self, move):
         if self.running:
