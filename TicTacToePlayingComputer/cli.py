@@ -1,6 +1,6 @@
 from game import Game
 from move import BoardMove
-from computer_player import minimax
+from computer_player import computer_move
 import os
 import re
 
@@ -30,7 +30,7 @@ class CLI:
                 if self.game.player == self.HUMAN:
                     move = self.get_player_move()
                 else:
-                    move = minimax(self.game).move
+                    move = computer_move(self.game, self.COMPUTER)
 
             self.game.play_turn(move)
 

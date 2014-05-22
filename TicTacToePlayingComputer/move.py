@@ -16,9 +16,8 @@ class BoardMove:
 
 
 class BestMove(BoardMove):
-    def __init__(self, score, depth, move):
+    def __init__(self, score, move):
         super(BestMove, self).__init__(move)
-        self.depth = depth
         self.score = score
 
     def __repr__(self):

@@ -12,37 +12,44 @@ INFINITY = 10000
 INITIAL_DEPTH = 100
 
 
-def minimax(game, depth=INITIAL_DEPTH, maximazing_player=True):
+def computer_move(game, computer_player):
+    return minimax(game, computer_player).move
+
+"""Minimax Algorithm assumes that at each step:
+* Maximazing player is trying to maximize his chances of winning
+* on the next turn the Minimizing player is trying to minimize the chances of the maximazing player winning"""
+def minimax(game, computer_player, depth=INITIAL_DEPTH):
     possible_game = deepcopy(game)
 
     if possible_game.running is False:
-        score = score_game(possible_game, maximazing_player)
-        return BestMove(score, depth, possible_game.last_move())
+        score = score_game(possible_game, computer_player, depth)
+        return BestMove(score, possible_game.last_move())
 
-    if maximazing_player:
-        best_move = BestMove(NINFINITY, depth, None)
+    if game.player == computer_player:
+        best_move = BestMove(NINFINITY, None)
         for move in possible_game.all_possible_moves():
             possible_game.play_turn(move)
-            scored_move = minimax(possible_game, depth - 1, False)
-            if scored_move.score > best_move.score and scored_move.depth <= best_move.depth:
+            scored_move = minimax(possible_game, computer_player, depth-1)
+            if scored_move.score > best_move.score:
                 best_move = scored_move
                 best_move.move = move
+        return best_move
 
     else:
-        best_move = BestMove(INFINITY, depth, None)
+        best_move = BestMove(INFINITY, None)
         for move in possible_game.all_possible_moves():
             possible_game.play_turn(move)
-            scored_move = minimax(possible_game, depth - 1, True)
-            if scored_move.score < best_move.score and scored_move.depth <= best_move.depth:
+            scored_move = minimax(possible_game, computer_player, depth-1)
+            if scored_move.score < best_move.score:
                 best_move = scored_move
                 best_move.move = move
-    return best_move
+        return best_move
 
 
-def score_game(game, maximazing_player):
+def score_game(game, computer_player, depth):
     if not game.has_winner:
-        return TIE
-    if maximazing_player:
-        return WIN
+        return TIE + game.count_empty_squares() + depth
+    if game.winner == computer_player:
+        return WIN * game.count_empty_squares() + depth
     else:
-        return LOSE
+        return LOSE * game.count_empty_squares() + depth

@@ -38,19 +38,26 @@ class Game:
     def winning_move(self):
         return [self.player] * self.board.BOARD_SIZE
 
+    def count_empty_squares(self):
+        return (self.board.BOARD_SIZE ** 2) - len(self._moves)
+
     def change_turn(self):
         if self.running:
             self._player = self.opponent
 
     def play_turn(self, move):
         if self.running:
+            if self.valid_move(move):
+                self._moves.append(move)
             self.board.make_move(move, self.player)
-            self._moves.append(move)
             self.check_game_over()
             self.change_turn()
 
     def check_game_over(self):
-        if self.board_filled() or self.game_won():
+        if self.is_game_won():
+            self.set_game_won()
+            self.end_game()
+        if self.board_filled():
             self.end_game()
 
     def board_filled(self):
@@ -69,12 +76,14 @@ class Game:
     def valid_move(self, move):
         return self.board.valid_move(move)
 
-    def game_won(self):
+    def is_game_won(self):
         if self.check_rows() or self.check_columns() or self.check_diagonal() or self.check_antidiagonal():
-            self._has_winner = True
-            self.winner = self.player
             return True
         return False
+
+    def set_game_won(self):
+        self._has_winner = True
+        self.winner = self.player
 
     def check_rows(self):
         for i in range(self.board.BOARD_SIZE):
@@ -102,7 +111,6 @@ class Game:
                 if self.board.is_empty(move):
                     moves.append(move)
         return moves
-
 
     def end_game(self):
         self._running = False
