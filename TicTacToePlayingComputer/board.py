@@ -28,10 +28,13 @@ class TicTacToeBoard:
         return self.inside(move.x) and self.inside(move.y)
 
     def is_empty(self, move):
-        return self._board[move.x][move.y] == None
+        return self._board[move.x][move.y] == self.EMPTY
 
     def inside(self, point):
         return point >= 0 and point < self.BOARD_SIZE
+
+    def clear_square(self, square):
+        self._board[square.x][square.y] = self.EMPTY
 
     def full_board(self):
         for row in self.board:

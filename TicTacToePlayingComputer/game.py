@@ -42,7 +42,8 @@ class Game:
         return (self.board.BOARD_SIZE ** 2) - len(self._moves)
 
     def change_turn(self):
-        self._player = self.opponent
+        if self.running:
+            self._player = self.opponent
 
     def play_turn(self, move):
         if self.running:
@@ -71,6 +72,9 @@ class Game:
     def last_move(self):
         if self.has_moves_on_board():
             self._moves[-1]
+
+    def undo_move(self, move):
+        self.board.clear_square(move)
 
     def valid_move(self, move):
         return self.board.valid_move(move)
